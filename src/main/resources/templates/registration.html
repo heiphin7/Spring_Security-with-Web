@@ -21,29 +21,47 @@
 
 
                         <form method="post" th:action="@{/register}" th:object="${registrationUserDTO}" class="register-form" id="register-form">
-                            <div class="form-group">
-                                <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                                <input type="text" style="margin-top: 10px" name="username" id="name" placeholder="Your Name"  th:field="*{username}" th:errorClass="is-invalid" />
-                            </div>
-                            <div th:if="${#fields.hasErrors('username')}" th:errors="${registrationUserDTO.username}" class="invalid-feedback">Username Error Message Here</div>
+
 
                             <div class="form-group">
-                                <label for="email"><i class="zmdi zmdi-email"></i></label>
-                                <input type="email" style="margin-top: 10px" name="email" id="email" placeholder="Your Email" th:field="*{email}" th:errorClass="is-invalid"/>
+                                <div class="input-group">
+                                    <label for="name" style="bottom: 12px"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                                    <input type="text" style="margin-top: 10px" name="username" id="name" placeholder="Your Name"  th:field="*{username}" th:errorClass="is-invalid" />
+                                </div>
+                                <div th:if="${#fields.hasErrors('username')}" th:errors="${registrationUserDTO.username}" class="invalid-feedback">Username Error Message Here</div>
                             </div>
-                            <div th:if="${#fields.hasErrors('email')}" th:errors="${registrationUserDTO.email}" class="invalid-feedback">Email Error Message Here</div>
+
+
 
                             <div class="form-group">
-                                <label for="pass"><i class="zmdi zmdi-lock"></i></label>
-                                <input type="password" style="margin-top: 10px" name="password" id="pass" placeholder="Password" th:field="*{password}" th:errorClass="is-invalid"/>
+                                <div class="input-group">
+                                    <label for="email" style="bottom: 12px"><i class="zmdi zmdi-email"></i></label>
+                                    <input type="email" style="margin-top: 10px" name="email" id="email" placeholder="Your Email" th:field="*{email}" th:errorClass="is-invalid"/>
+                                </div>
+                                <div th:if="${#fields.hasErrors('email')}" th:errors="${registrationUserDTO.email}" class="invalid-feedback">Email Error Message Here</div>
                             </div>
-                            <div th:if="${#fields.hasErrors('password')}" th:errors="${registrationUserDTO.password}" class="invalid-feedback">Password Error Message Here</div>
+
+
 
                             <div class="form-group">
-                                <label for="pass"><i class="zmdi zmdi-lock"></i></label>
-                                <input type="password" style="margin-top: 10px" name="confirmPassword" id="confirmPassword" placeholder="Repeat your password" th:field="*{confirmPassword}" th:errorClass="is-invalid"/>
+                                <div class="input-group">
+                                    <label for="pass" style="bottom: 12px"><i class="zmdi zmdi-lock"></i></label>
+                                    <input type="password" style="margin-top: 10px" name="password" id="pass" placeholder="Password" th:field="*{password}" th:errorClass="is-invalid"/>
+                                </div>
+                                <div th:if="${#fields.hasErrors('password')}" th:errors="${registrationUserDTO.password}" class="invalid-feedback">Password Error Message Here</div>
                             </div>
-                            <div th:if="${#fields.hasErrors('confirmPassword')}" th:errors="${registrationUserDTO.confirmPassword}" class="invalid-feedback">Confirm Password Error Message Here</div>
+
+
+
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <label for="pass" style="bottom: 12px"><i class="zmdi zmdi-lock"></i></label>
+                                    <input type="password" style="margin-top: 10px" name="confirmPassword" id="confirmPassword" placeholder="Repeat your password" th:field="*{confirmPassword}" th:errorClass="is-invalid"/>
+                                </div>
+                                <div th:if="${#fields.hasErrors('confirmPassword')}" th:errors="${registrationUserDTO.confirmPassword}" class="invalid-feedback">Confirm Password Error Message Here</div>
+                            </div>
+
+
 
                             <div class="form-group form-button">
                                     <input type="submit" name="signin" id="signin" class="form-submit" value="Register"/>

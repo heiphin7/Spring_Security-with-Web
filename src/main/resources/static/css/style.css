@@ -1,4 +1,23 @@
 @import "bootstrap";
+
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-group-addon {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.input-group input {
+  padding-left: 30px; /* Установите отступ слева, чтобы учесть ширину иконки */
+}
+
+
 /* @extend display-flex; */
 display-flex, .display-flex, .display-flex-center, .signup-content, .signin-content, .social-login, .socials {
   display: flex;
@@ -14,7 +33,8 @@ list-type-ulli, .socials {
 .invalid-feedback {
   font-size: 14px;
   font-weight: 600;
-  text-align: left  ;
+  text-align: left ;
+  font-family: "Century Gothic";
 }
 
 /* poppins-300 - latin */

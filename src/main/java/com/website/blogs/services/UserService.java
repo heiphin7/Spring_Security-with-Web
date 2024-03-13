@@ -21,12 +21,16 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     public void saveUser(User user){
-        user.setRoles(List.of(roleRepository.findByName("ROLE_USER").get()));
+        user.setRoles(List.of(roleRepository.findByName("ROLE_USER").orElseThrow()));
         userRepository.save(user);
     }
 
     public Optional<User> findByUsername(String username){
         return userRepository.findByUsername(username);
+    }
+
+    public boolean userExists(String username){
+        return findByUsername(username).isPresent();
     }
 
     @Override
@@ -46,4 +50,5 @@ public class UserService implements UserDetailsService {
                     ).collect(Collectors.toList())
             );
     }
+
 }

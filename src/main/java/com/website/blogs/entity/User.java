@@ -32,4 +32,11 @@ public class User {
     )
 
     private Collection<Role> roles;
+
+    public User() {}
+    public User(String username, String password, String email){
+        this.username = username;
+        this.password = password;
+        this.email = email;
+    }
 }

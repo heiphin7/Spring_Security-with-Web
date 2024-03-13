@@ -1,5 +1,8 @@
 package com.website.blogs;
 
+import com.website.blogs.entity.User;
+import com.website.blogs.services.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

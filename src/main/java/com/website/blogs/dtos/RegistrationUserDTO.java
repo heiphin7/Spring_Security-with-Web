@@ -14,7 +14,7 @@ public class RegistrationUserDTO {
     private String password;
     @Size(min = 8, message = "Подтвердите пароль")
     private String confirmPassword;
-    @Size(min = 5, message = "Введите корректный email")
+    @Size(min = 5, message = "Введите правильную почту")
     private String email;
 
     @Override
