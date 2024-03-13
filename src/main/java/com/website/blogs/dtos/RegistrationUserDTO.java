@@ -3,18 +3,18 @@ package com.website.blogs.dtos;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
 public class RegistrationUserDTO {
-    @NotNull(message = "Не должны быть пустым")
+    @Size(min = 5,message = "Имя должно быть больше 5-ти символов")
     private String username;
-    @NotNull(message = "Не должны быть пустым")
+    @Size(min=8, message = "Пароль должен быть больше 8-ми символов")
     private String password;
-    @NotNull(message = "Не должны быть пустым")
+    @Size(min = 8, message = "Подтвердите пароль")
     private String confirmPassword;
-    @NotNull(message = "Не должны быть пустым")
-    @Email(message = "Введите корректный email")
+    @Size(min = 5, message = "Введите корректный email")
     private String email;
 
     @Override
