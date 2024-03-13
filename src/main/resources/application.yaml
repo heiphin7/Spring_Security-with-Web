@@ -1,4 +1,7 @@
 spring:
+  thymeleaf:
+    cache: true
+    encoding: UTF-8
   datasource:
     url: jdbc:postgresql://localhost:5432/blogdatabase
     username: postgres
@@ -9,4 +12,4 @@ spring:
       ddl-auto: update
       show-sql: true
 server:
-  port: 8189
+  port: 8008
