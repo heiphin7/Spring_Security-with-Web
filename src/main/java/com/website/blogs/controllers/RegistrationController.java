@@ -14,6 +14,7 @@ import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class RegistrationController {
     }
 
     @PostMapping("/register")
-    public String registerNewUser(@Valid RegistrationUserDTO registrationUserDTO, Errors errors){
+    public String registerNewUser(@Valid RegistrationUserDTO registrationUserDTO, Errors errors, RedirectAttributes redirectAttributes){
 
         // Сначала у нас идет проверка на количество символов, а далее уже ручные проверки
         if(errors.hasErrors()){
@@ -58,13 +59,13 @@ public class RegistrationController {
         }
 
         // Проверка подтерждения пароля на наличие пробелов
-        if(!registrationUserDTO.getConfirmPassword().matches("^[^\\\\s]+$")){
+        if(!registrationUserDTO.getConfirmPassword().matches("^[^\\s]+$")){
             errors.rejectValue("confirmPassword", "erorr.WrongPassword", "Пароль не должен содержать пробелы!");
             return "registration";
         }
 
         // Проверка почты
-        if(!registrationUserDTO.getPassword().matches("^[^\\\\s]+$")){
+        if(!registrationUserDTO.getPassword().matches("^[^\\s]+$")){
             errors.rejectValue("password", "erorr.password", "Пароль не должен содержать пробелы!");
             return "registration";
         }
@@ -80,7 +81,8 @@ public class RegistrationController {
         String encodedPassword = passwordEncoder.encode(registrationUserDTO.getPassword());
         User user = new User(registrationUserDTO.getUsername(),encodedPassword, registrationUserDTO.getEmail());
 
-
+        // Сообщение об успешной регистрации
+        redirectAttributes.addFlashAttribute("message", "Отлично! Вы успешно прошли регистрацию, теперь войдите в аккаунт");
         userService.saveUser(user);
         return "redirect:/login";
     }

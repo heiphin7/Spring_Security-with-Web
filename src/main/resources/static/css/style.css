@@ -1,4 +1,24 @@
-@import "bootstrap";
+.success-msg {
+  color: #270;
+  background-color: #DFF2BF;
+  width: 700px;
+  height: 40px;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 300;
+  font-size: 20px;
+  margin: 25px;
+  position: absolute;
+  justify-content: center;
+  left: 50%;
+  top: 5%;
+  transform: translate(-50%, -50%);
+}
+
+.success-msg{
+  margin: 10px 0;
+  padding: 5px;
+  border-radius: 3px 3px 3px 3px;
+}
 
 .input-group {
   position: relative;
@@ -21,7 +41,8 @@
 /* @extend display-flex; */
 display-flex, .display-flex, .display-flex-center, .signup-content, .signin-content, .social-login, .socials {
   display: flex;
-  display: -webkit-flex; }
+  display: -webkit-flex;
+}
 
 /* @extend list-type-ulli; */
 list-type-ulli, .socials {
@@ -36,6 +57,8 @@ list-type-ulli, .socials {
   text-align: left ;
   font-family: "Century Gothic";
 }
+
+
 
 /* poppins-300 - latin */
 @font-face {

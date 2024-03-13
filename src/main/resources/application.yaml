@@ -11,5 +11,8 @@ spring:
     hibernate:
       ddl-auto: update
       show-sql: true
+jwt:
+  secret: a23rser3fwa3r4fawerfagy53uyt73
+  lifetime: 20m
 server:
   port: 8008
