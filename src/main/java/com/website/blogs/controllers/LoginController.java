@@ -1,16 +1,20 @@
 package com.website.blogs.controllers;
 
+import com.website.blogs.dtos.JwtResponce;
 import com.website.blogs.dtos.LoginUserDTO;
 import com.website.blogs.entity.User;
 import com.website.blogs.services.UserService;
 import com.website.blogs.utils.JwtTokenUtils;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -41,27 +46,25 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String checkUser(@Valid LoginUserDTO loginUserDTO, Errors errors, RedirectAttributes redirectAttributes){
+    public Object checkUser(@Valid LoginUserDTO loginUserDTO, Errors errors, RedirectAttributes redirectAttributes, HttpServletResponse httpServletResponse){
         if(errors.hasErrors()){
-            return "loginpage";
+             return "loginpage";
         }
-/*
-        if(!userService.userExists(loginUserDTO.getUsername())){
-            errors.rejectValue("username", "erorr.UserExists", "Пользователь не найден");
-            return "loginpage";
-        }
-*/
-        //Optional<User> user = userService.findByUsername(loginUserDTO.getUsername());
-        //String encodedPassword = passwordEncoder.encode(loginUserDTO.getPassword());
-
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUserDTO.getUsername(), loginUserDTO.getPassword()));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUserDTO.getUsername(), loginUserDTO.getPassword());
+            UserDetails user = userService.loadUserByUsername(loginUserDTO.getUsername());
+            String token = jwtTokenUtils.generateToken(user);
+
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            logger.info("Пользователь успешно прошёл авторизацию");
+
+            httpServletResponse.setHeader("Authorization", "Bearer " + token);
+
+            return "redirect:/main";
         }catch (BadCredentialsException e){
             errors.rejectValue("username", "erorr.UserExists", "иди нахуй");
+             return "loginpage";
         }
-
-        UserDetails user = userService.loadUserByUsername(loginUserDTO.getUsername());
-        String token = jwtTokenUtils.generateToken(user);
-        return "redirect:/main";
     }
 }
