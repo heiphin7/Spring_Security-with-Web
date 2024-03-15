@@ -5,6 +5,49 @@
     <title>Title</title>
 </head>
 <body>
-idi naxuy dukachek
+    <h1>
+        Hello from secured data
+    </h1>
 </body>
+<script>
+    // Функция для отправки GET запроса к /main с использованием токена JWT
+    function fetchDataWithToken() {
+        // Получаем токен из куки
+        const token = getCookie("jwtToken");
+
+        // Проверяем наличие токена
+        if (token) {
+            // Отправляем GET запрос на сервер с токеном в заголовке Authorization
+            fetch("main", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+                .then(response => {
+                    // Обработка ответа от сервера
+                })
+                .catch(error => {
+                    // Обработка ошибок
+                });
+        } else {
+            console.log("Токен отсутствует");
+        }
+    }
+    // Функция для получения значения куки по имени
+    function getCookie(name) {
+        const cookies = document.cookie.split("; ");
+        for (const cookie of cookies) {
+            const [cookieName, cookieValue] = cookie.split("=");
+            if (cookieName === name) {
+                return cookieValue;
+            }
+        }
+        return null;
+    }
+
+    // Вызываем функцию для отправки запроса с токеном
+    fetchDataWithToken();
+
+</script>
 </html>
