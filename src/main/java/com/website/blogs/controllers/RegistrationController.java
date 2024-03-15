@@ -37,9 +37,6 @@ public class RegistrationController {
             return "registration";
         }
 
-        if(!registrationUserDTO.getUsername().matches("^[a-zA-Z]+$")){
-            errors.rejectValue("username", "erorrs.wrongUsername", "Имя пользователя должно быть на английском!");
-        }
         // Проверка, имеется ли пробелы в username
         else if(!registrationUserDTO.getUsername().matches("^[a-zA-Z0-9]+$")){
             errors.rejectValue("username", "erorrs.NotAvailableUsername", "Нельзя использовать пробелы!");

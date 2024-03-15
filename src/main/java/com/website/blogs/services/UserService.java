@@ -4,6 +4,7 @@ package com.website.blogs.services;
 import com.website.blogs.entity.User;
 import com.website.blogs.repository.RoleRepository;
 import com.website.blogs.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,6 +35,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = findByUsername(username).orElseThrow(
                 () ->
@@ -41,6 +43,7 @@ public class UserService implements UserDetailsService {
                                 String.format("Пользователь %s е найден", username)
                         )
         );
+        int size = user.getRoles().size();
             return new org.springframework.security.core.userdetails.User(
                     user.getUsername(),
                     user.getPassword(),

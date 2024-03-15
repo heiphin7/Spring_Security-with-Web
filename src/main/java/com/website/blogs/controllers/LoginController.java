@@ -5,6 +5,7 @@ import com.website.blogs.dtos.LoginUserDTO;
 import com.website.blogs.entity.User;
 import com.website.blogs.services.UserService;
 import com.website.blogs.utils.JwtTokenUtils;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,25 +48,40 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public Object checkUser(@Valid LoginUserDTO loginUserDTO, Errors errors, RedirectAttributes redirectAttributes, HttpServletResponse httpServletResponse){
-        if(errors.hasErrors()){
-             return "loginpage";
+    public Object checkUser(@Valid LoginUserDTO loginUserDTO, Errors errors, RedirectAttributes redirectAttributes, Model model, HttpServletResponse response) {
+
+        if (errors.hasErrors()) {
+            return "loginpage";
         }
+
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUserDTO.getUsername(), loginUserDTO.getPassword());
-            UserDetails user = userService.loadUserByUsername(loginUserDTO.getUsername());
-            String token = jwtTokenUtils.generateToken(user);
+            UserDetails userDetails = userService.loadUserByUsername(loginUserDTO.getUsername());
 
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+            // Аутентификация пользователя
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginUserDTO.getUsername(), loginUserDTO.getPassword(), userDetails.getAuthorities())
+            );
+
+            // Установка аутентифицированного пользователя в контекст безопасности
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            logger.info("Пользователь успешно прошёл авторизацию");
 
-            httpServletResponse.setHeader("Authorization", "Bearer " + token);
+            String token = jwtTokenUtils.generateToken(userDetails);
 
+            Cookie cookie = new Cookie("jwtToken", token);
+            cookie.setPath("/main");
+            cookie.setMaxAge(86400); // 24 hours
+            cookie.setHttpOnly(true);
+
+            response.addCookie(cookie);
+
+            System.out.println(SecurityContextHolder.getContext().getAuthentication());
             return "redirect:/main";
-        }catch (BadCredentialsException e){
-            errors.rejectValue("username", "erorr.UserExists", "иди нахуй");
-             return "loginpage";
+
+        } catch (BadCredentialsException ex) {
+            logger.error("Ошибка аутентификации", ex);
+            errors.rejectValue("username", "authenticationError", "Неверное имя пользователя или пароль");
+            return "loginpage";
         }
     }
+
 }

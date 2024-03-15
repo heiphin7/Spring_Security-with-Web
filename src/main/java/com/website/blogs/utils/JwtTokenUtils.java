@@ -35,10 +35,10 @@ public class JwtTokenUtils {
         Date expiredDate = new Date(issuedAt.getTime() + lifetime.toMillis());
 
         return Jwts.builder()
-                .setSubject(user.getUsername())
-                .setExpiration(expiredDate)
-                .setIssuedAt(issuedAt)
                 .setClaims(claims)
+                .setSubject(user.getUsername())
+                .setIssuedAt(issuedAt)
+                .setExpiration(expiredDate)
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }

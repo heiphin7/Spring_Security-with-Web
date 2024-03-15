@@ -22,11 +22,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(
                 csrf -> csrf.disable()
-        ).authorizeHttpRequests(
-                auth ->
-                        auth.requestMatchers("/main").authenticated()
+                ).authorizeHttpRequests( (auth) -> auth
+                        .requestMatchers("/main").authenticated()
                                 .requestMatchers("/admin").hasRole("ADMIN")
-                                .requestMatchers("/info").authenticated()
                                 .anyRequest().permitAll()
         ).addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(

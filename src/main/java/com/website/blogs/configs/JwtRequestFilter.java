@@ -2,10 +2,9 @@
 package com.website.blogs.configs;
 
 import com.website.blogs.controllers.RegistrationController;
+import com.website.blogs.cookie.TokenExtractor;
 import com.website.blogs.services.UserService;
 import com.website.blogs.utils.JwtTokenUtils;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -23,55 +20,41 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
     private final JwtTokenUtils jwtTokenUtils;
     private final UserService userService;
+    private final TokenExtractor tokenExtractor;
     private static final Logger logger = LoggerFactory.getLogger(RegistrationController.class);
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-            throws ServletException, IOException {
-        logger.info("Фильтр сработал");
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+
         final String requestTokenHeader = request.getHeader("Authorization");
 
-        String username = null;
-        String jwtToken = null;
+        String token = tokenExtractor.extractToken(request);
 
-        // Проверяем наличие токена в заголовке запроса
-        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-            logger.info("Токен присутсвует");
-            jwtToken = requestTokenHeader.substring(7);
+        if (token != null) {
+            logger.info("Токен на базе");
 
-            // Получаем имя пользователя из токена
-            username = jwtTokenUtils.getUsername(jwtToken);
+            System.out.println(token);
+            String username = jwtTokenUtils.getUsername(token);
 
-            // Если имя пользователя есть и аутентификация еще не прошла
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                logger.info("Токен не пустой");
-                // Получаем UserDetails пользователя
-                UserDetails userDetails = userService.loadUserByUsername(username);
+            if (username != null) {
+                logger.info("С токеном все ок!");
 
-                // Проверяем токен
-                if (username != null) {
-
-                    // Создаем аутентификацию пользователя и устанавливаем его в SecurityContext
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
-                    usernamePasswordAuthenticationToken
-                            .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                    logger.info("Успешно положили токен в контекст");
-                }
+                UserDetails user = userService.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken authorization = new UsernamePasswordAuthenticationToken(
+                        user.getUsername(),
+                        null,
+                        user.getAuthorities()
+                );
+                SecurityContextHolder.getContext().setAuthentication(authorization);
+                logger.info("Успешно положили в контекст");
             }
         }
-        // Продолжаем выполнение запроса
         chain.doFilter(request, response);
     }
 }
-
-
-
