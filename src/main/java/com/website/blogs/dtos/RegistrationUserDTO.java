@@ -14,14 +14,5 @@ public class RegistrationUserDTO {
     @Size(min = 5, message = "Введите правильную почту")
     private String email;
 
-    @Override
-    public String toString() {
-        return "RegistrationUserDTO{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", confirmPassword='" + confirmPassword + '\'' +
-                ", email='" + email + '\'' +
-                '}';
-    }
 }
 

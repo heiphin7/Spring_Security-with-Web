@@ -38,10 +38,11 @@ public class RegistrationController {
         }
 
         // Проверка, имеется ли пробелы в username
-        else if(!registrationUserDTO.getUsername().matches("^[a-zA-Z0-9]+$")){
-            errors.rejectValue("username", "erorrs.NotAvailableUsername", "Нельзя использовать пробелы!");
+        else if (!registrationUserDTO.getUsername().matches("^[a-zA-Zа-яА-Я0-9]+$")) {
+            errors.rejectValue("username", "erorrs.NotAvailableUsername", "В имени пользователя можно только буквы и цифры!");
             return "registration";
         }
+
 
         // проверка, не занято ли имя пользователя
         if(userService.userExists(registrationUserDTO.getUsername())){

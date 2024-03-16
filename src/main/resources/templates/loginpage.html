@@ -40,7 +40,7 @@
                                     <label for="your_name"><i class="zmdi zmdi-account material-icons-name"></i></label>
                                     <input type="text" name="username" id="your_name" placeholder="Your Name" th:field="*{username}" th:errorClass="is-invalid"/>
                                 </div>
-                                <div th:if="${#fields.hasErrors('username')}" th:errors="${loginUserDTO.username}" class="invalid-feedback" style="margin-top: 1px; font-size: 14px">Email Error Message Here</div>
+                                <div th:if="${#fields.hasErrors('username')}" th:errors="${loginUserDTO.username}" class="invalid-feedback" style="font-size: 14px">Email Error Message Here</div>
                             </div>
 
                             <div class="form-group">
@@ -69,8 +69,6 @@
         </section>
 
     </div>
-
-    <!-- JS -->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="js/main.js"></script>
 </body>
