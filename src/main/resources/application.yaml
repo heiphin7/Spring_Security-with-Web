@@ -1,6 +1,9 @@
 spring:
+  web:
+    resources:
+      static-locations: classpath:/static/
   thymeleaf:
-    cache: true
+    cache: false
     encoding: UTF-8
   datasource:
     url: jdbc:postgresql://localhost:5432/blogdatabase

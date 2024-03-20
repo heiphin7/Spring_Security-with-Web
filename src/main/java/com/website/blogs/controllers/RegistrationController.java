@@ -1,8 +1,11 @@
 package com.website.blogs.controllers;
 
+import com.website.blogs.cookie.TokenExtractor;
 import com.website.blogs.dtos.RegistrationUserDTO;
 import com.website.blogs.entity.User;
 import com.website.blogs.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -22,10 +25,12 @@ public class RegistrationController {
     private final Validator validator;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final TokenExtractor tokenExtractor;
     private static final Logger logger = LoggerFactory.getLogger(RegistrationController.class);
 
     @GetMapping("/register")
-    public String registrationPage(@ModelAttribute("registrationUserDTO") RegistrationUserDTO registrationUserDTO){
+    public String registrationPage(@ModelAttribute("registrationUserDTO") RegistrationUserDTO registrationUserDTO, HttpServletResponse response, HttpServletRequest request){
+        tokenExtractor.removeTokenFromRequest(request);
         return "registration";
     }
 

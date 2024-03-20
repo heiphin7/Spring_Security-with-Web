@@ -1,11 +1,13 @@
 package com.website.blogs.controllers;
 
+import com.website.blogs.cookie.TokenExtractor;
 import com.website.blogs.dtos.JwtResponce;
 import com.website.blogs.dtos.LoginUserDTO;
 import com.website.blogs.entity.User;
 import com.website.blogs.services.UserService;
 import com.website.blogs.utils.JwtTokenUtils;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,9 +42,11 @@ public class LoginController {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtils jwtTokenUtils;
     private final AuthenticationManager authenticationManager;
+    private final TokenExtractor tokenExtractor;
     private static final Logger logger = LoggerFactory.getLogger(RegistrationController.class);
     @GetMapping("/login")
-    public String loginPage(Model model, LoginUserDTO loginUserDTO){
+    public String loginPage(Model model, LoginUserDTO loginUserDTO, HttpServletResponse response, HttpServletRequest request){
+        tokenExtractor.removeTokenFromRequest(request);
         model.addAttribute("loginUserDTO", loginUserDTO);
         return "loginpage";
     }

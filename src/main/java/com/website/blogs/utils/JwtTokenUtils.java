@@ -23,6 +23,19 @@ public class JwtTokenUtils {
     @Value("${jwt.lifetime}")
     private Duration lifetime;
 
+    public boolean validateToken(String token) {
+        try {
+            // Разбираем токен и извлекаем данные
+            Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+            // Проверяем, не истек ли срок действия токена
+            Date expiration = claims.getExpiration();
+            return !expiration.before(new Date());
+        } catch (Exception e) {
+            // Ошибка при проверке токена
+            return false;
+        }
+    }
+
     public String generateToken(UserDetails user){
         Map<String, Object> claims = new HashMap<>();
         List<String> roles = user.getAuthorities().stream().map(
