@@ -26,7 +26,7 @@ public class SecurityConfig {
                         csrf -> csrf.disable()
                 ).authorizeHttpRequests( (auth) -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/main", "/add").authenticated()
+                        .requestMatchers("/blogs/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)

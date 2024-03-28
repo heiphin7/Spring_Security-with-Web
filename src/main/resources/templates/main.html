@@ -42,9 +42,9 @@
                     <li class="nav-item"><a class="nav-link" href="#">Tour</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Product</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Features</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/add">Add Post</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/blogs/add">Add Post</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Saved Blogs</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Log Out</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/login">Log Out</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">
                         <svg class="bi" width="24" height="24"><use xlink:href="#cart"></use></svg>
                     </a></li>
@@ -91,7 +91,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary">Save</button>
                             </div>
                             <small class="text-body-secondary">9 mins</small>
                         </div>
@@ -124,40 +124,5 @@
 
 </body>
 <script>
-    // Функция для отправки GET запроса к /main с использованием токена JWT
-    function fetchDataWithToken() {
-        // Получаем токен из куки
-        const token = getCookie("jwtToken");
-
-        // Проверяем наличие токена
-        if (token) {
-            // Отправляем GET запрос на сервер с токеном в заголовке Authorization
-            fetch("main", {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            })
-                .then(response => {
-                    // Обработка ответа от сервера
-                })
-                .catch(error => {
-                    // Обработка ошибок
-                });
-        } else {
-            console.log("Токен отсутствует");
-        }
-    }
-    // Функция для получения значения куки по имени
-    function getCookie(name) {
-        const cookies = document.cookie.split("; ");
-        for (const cookie of cookies) {
-            const [cookieName, cookieValue] = cookie.split("=");
-            if (cookieName === name) {
-                return cookieValue;
-            }
-        }
-        return null;
-    }
 </script>
 </html>
