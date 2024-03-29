@@ -1,6 +1,7 @@
 package com.website.blogs.controllers;
 
 import com.website.blogs.entity.Blog;
+import com.website.blogs.entity.User;
 import com.website.blogs.services.BlogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

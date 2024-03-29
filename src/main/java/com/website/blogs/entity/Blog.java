@@ -24,13 +24,18 @@ public class Blog {
     @Column(name = "image", columnDefinition = "TEXT")
     private String image;
 
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private User author;
+
     public Blog(){}
 
-    public Blog(String title, String anons, String fulltext, String image){
+    public Blog(String title, String anons, String fulltext, String image, User author){
         this.title = title;
         this.anons = anons;
         this.fulltext = fulltext;
         this.image = image;
+        this.author = author;
     }
     @Override
     public String toString() {

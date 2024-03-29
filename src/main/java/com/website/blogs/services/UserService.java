@@ -6,7 +6,9 @@ import com.website.blogs.repository.RoleRepository;
 import com.website.blogs.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,6 +23,14 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+
+    public Optional<User> getCurrentUser () {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<User> optionalUser = findByUsername(authentication.getName());
+
+        return optionalUser;
+    }
+
     public void saveUser(User user){
         user.setRoles(List.of(roleRepository.findByName("ROLE_USER").orElseThrow()));
         userRepository.save(user);
