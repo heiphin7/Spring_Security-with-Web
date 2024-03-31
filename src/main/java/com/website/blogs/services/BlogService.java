@@ -1,13 +1,17 @@
 package com.website.blogs.services;
 
 import com.website.blogs.entity.Blog;
+import com.website.blogs.entity.User;
 import com.website.blogs.repository.BlogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
 
 @Service
@@ -19,6 +23,7 @@ public class BlogService{
         return blogRepository.findById(aLong);
     }
 
+    // JPA репозиторий делает CRUD - операции за нас, так что просто используем его готовые методы
     public void saveBlog(Blog blog){
         blogRepository.save(blog);
     }

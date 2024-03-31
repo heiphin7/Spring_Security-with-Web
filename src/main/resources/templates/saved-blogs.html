@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Main Page</title>
+    <title>Saved Blogs</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
     <link rel="stylesheet" href="/static/scss/style.scss">
@@ -39,7 +39,7 @@
                     <li class="nav-item"><a class="nav-link" href="#">
                         <svg class="bi" width="24" height="24"><use xlink:href="#aperture"></use></svg>
                     </a></li>
-                    <li class="nav-item"><a class="nav-link" href="/blogs/main">Main</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Main</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Features</a></li>
                     <li class="nav-item"><a class="nav-link" href="/blogs/add">Add Post</a></li>
                     <li class="nav-item"><a class="nav-link" href="/blogs/saved-blogs">Saved Blogs</a></li>
@@ -55,8 +55,7 @@
 
 <div class="position-relative overflow-hidden p-2 p-md-4 m-md-3 text-center bg-body-tertiary">
     <div class="col-md-8 p-lg-4 mx-auto my-5"> <!-- Изменен класс на col-md-8 -->
-        <h1 class="display-3 fw-bold">Открой новые истории с нашими блогами</h1>
-        <h3 class="fw-normal text-muted mb-3">Изучай, твори, делай - блоги для тебя</h3>
+        <h1 class="display-3 fw-bold">Ваши сохраненные блоги </h1>
         <div class="d-flex gap-3 justify-content-center lead fw-normal">
         </div>
     </div>
@@ -67,7 +66,7 @@
 <div class="album py-5 bg-body-tertiary">
     <div class="container">
         <div class="row">
-            <div class="col-md-4" th:each="blog: ${blogs}">
+            <div class="col-md-4" th:each="blog: ${savedBlogs}">
                 <div class="card mb-4 box-shadow">
                     <img th:if="${blog.image != null}" th:src="${blog.image}" alt="Blog Image" style="width: 100%; height: 100%; object-fit: cover;">
                     <div class="card-body">
@@ -89,24 +88,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div th:if="${totalPages > 1}">
-            <ul class="pagination">
-                <li th:if="${currentPage > 0}">
-                    <a th:href="@{/your-url(page=${currentPage - 1})}" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}"
-                    th:class="${pageNumber == currentPage} ? 'active'">
-                    <a th:href="@{/your-url(page=${pageNumber})}" th:text="${pageNumber + 1}">1</a>
-                </li>
-                <li th:if="${currentPage < totalPages - 1}">
-                    <a th:href="@{/your-url(page=${currentPage + 1})}" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
         </div>
     </div>
 </div>

@@ -44,7 +44,6 @@ public class LoginController {
 
     @PostMapping("/login")
     public Object checkUser(@Valid LoginUserDTO loginUserDTO, Errors errors, RedirectAttributes redirectAttributes, Model model, HttpServletResponse response) {
-
         if (errors.hasErrors()) {
             return "loginpage";
         }

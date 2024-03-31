@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Data
@@ -24,20 +26,25 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    @ElementCollection(targetClass = Long.class)
+    @CollectionTable(name = "user_favorite_blogs", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "blog_id")
+    private List<Long> favoriteBlogs = new ArrayList<>();
+
     @ManyToMany
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-
-
     private Collection<Role> roles;
 
     public User() {}
-    public User(String username, String password, String email){
+
+    public User(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
     }
 }
+

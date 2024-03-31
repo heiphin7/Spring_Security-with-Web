@@ -25,10 +25,7 @@ public class UserService implements UserDetailsService {
     private final RoleRepository roleRepository;
 
     public Optional<User> getCurrentUser () {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Optional<User> optionalUser = findByUsername(authentication.getName());
-
-        return optionalUser;
+        return findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 
     public void saveUser(User user){
@@ -42,6 +39,11 @@ public class UserService implements UserDetailsService {
 
     public boolean userExists(String username){
         return findByUsername(username).isPresent();
+    }
+
+    public void updateFavoriteBlogs(User originalUser, User updatedUser) {
+        originalUser.setFavoriteBlogs(updatedUser.getFavoriteBlogs());
+        userRepository.save(originalUser);
     }
 
     @Override
