@@ -26,6 +26,7 @@ public class SecurityConfig {
                         csrf -> csrf.disable()
                 ).authorizeHttpRequests( (auth) -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        .requestMatchers("/error/**", "/error").permitAll()
                         .requestMatchers("/blogs/**").authenticated()
                         .anyRequest().permitAll()
                 )

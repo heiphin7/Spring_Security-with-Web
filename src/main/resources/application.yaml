@@ -19,3 +19,7 @@ jwt:
   lifetime: 20m
 server:
   port: 8008
+  error:
+    whitelabel:
+      enabled: false
+    path: /error
