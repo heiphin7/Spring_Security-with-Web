@@ -24,6 +24,12 @@
 - HTML/CSS/JS : Базовый стек для создания страниц
 - Bootstrap: Фреймворк для создания страниц на основе шаблонов
 
+# Связи и Табилцы в базе данных
+
+Здесь представлены связи таблиц в базе данных
+
+![alt text](https://github.com/heiphin7/Spring_Security-with-Web/blob/main/database%20references.png)
+
 
 # Иллюстрации
 
