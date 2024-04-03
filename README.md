@@ -62,7 +62,7 @@
 
 # Логика работы JWT
 
-[alt text](https://github.com/heiphin7/Spring_Security-with-Web/blob/main/database.png)
+![alt text](https://github.com/heiphin7/Spring_Security-with-Web/blob/main/database.png)
 
 ## Генерация JWT
 
