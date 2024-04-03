@@ -60,7 +60,94 @@
 + Пагинация: Как указывалось выше, в главной странице отображаются все блоги. Но тогда вопрос: А если блогов очень много, например 20, в этом случае я добавил пагинацию (распределение блогов по страницами)
 
 
-# Логика приложения
+# Логика работы JWT
+
+## Генерация JWT
+
+Для того, чтобы пользователь мог получить JWT токен, ему нужно успешно войти в аккаунт. Это происходит в LoginController, Где мы сначала проверяем его данные, затем только генерируем ему токен, вот как это выглядит в коде:
+
+```java
+          try {
+            UserDetails userDetails = userService.loadUserByUsername(loginUserDTO.getUsername());
+
+            // Аутентификация пользователя
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginUserDTO.getUsername(), loginUserDTO.getPassword(), userDetails.getAuthorities())
+            );
+
+            // Установка аутентифицированного пользователя в контекст безопасности
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // Генерация токена по UserDetails
+            String token = jwtTokenUtils.generateToken(userDetails);
+
+            Cookie cookie = new Cookie("jwtToken", token);
+            cookie.setPath("/blogs/");
+            cookie.setMaxAge(86400); // 24 hours
+            cookie.setHttpOnly(true);
+
+            // Добавление cookie в responce(ответ от сервера)
+            response.addCookie(cookie);
+            return "redirect:/blogs/main";
+
+            // Ошибка BadCreadential
+        } catch (BadCredentialsException ex) {
+            logger.error("Ошибка аутентификации", ex);
+            errors.rejectValue("username", "authenticationError", "Неверное имя пользователя или пароль");
+            return "loginpage";
+        }
+```
+Сам метод генерации токена в JwtTokenUtils:
+
+```java
+public String generateToken(UserDetails user){
+        Map<String, Object> claims = new HashMap<>();
+
+        // Получаем его роли, используя stream api
+        List<String> roles = user.getAuthorities().stream().map(
+                GrantedAuthority::getAuthority
+        ).collect(Collectors.toList());
+
+        // Добавляем его роли в список ролей
+        claims.put("roles", roles);
+
+        // Дата подписания и дата истечения jwt токена  
+        Date issuedAt = new Date();
+
+        // Здесь, чтобы посчитать дату истечения токена, мы просто берем и добавляем к дате подписания время жизни jwt, указанное в конфиге
+        Date expiredDate = new Date(issuedAt.getTime() + lifetime.toMillis());
+
+        // И все это дела собираем и подписываем нашим secret-ом
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(user.getUsername())
+                .setIssuedAt(issuedAt)
+                .setExpiration(expiredDate)
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
+    }
+```
+
+Проверка токена. Данный метод используется в JwtRequestFilter, который срабатывает при каждом запросе в защищенную область. Здесь, токен нам достают и передают из cookie.
+Здесь мы извлекаем данные из токена и при возникновении любой ошибки, связанный с токеном выдаем false. Например могут быть такие ошибки как: Expired(Истек токен), Invalid Signature(Неправильная подпись),
+Invalid Token Format(Неправильный формат). Все эти ошибки могут возникнуть только тогда, когда пользователь попытается изменить свой токен.
+
+```java
+public boolean validateToken(String token) {
+        try {
+            // Разбираем токен и извлекаем данные
+            Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+            
+            // Проверяем, не истек ли срок действия токена
+            Date expiration = claims.getExpiration();
+            
+            return !expiration.before(new Date());
+        } catch (Exception e) {
+            // Ошибка при проверке токена
+            return false;
+        }
+    }
+```
 
 
 # Установка и Запуск
