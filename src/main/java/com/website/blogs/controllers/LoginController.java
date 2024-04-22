@@ -43,7 +43,11 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public Object checkUser(@Valid LoginUserDTO loginUserDTO, Errors errors, RedirectAttributes redirectAttributes, Model model, HttpServletResponse response) {
+    public Object checkUser(
+            @Valid LoginUserDTO loginUserDTO, Errors errors, RedirectAttributes redirectAttributes, Model model, HttpServletResponse response) {
+
+        // Validations
+
         if (errors.hasErrors()) {
             return "loginpage";
         }
@@ -56,6 +60,10 @@ public class LoginController {
                     new UsernamePasswordAuthenticationToken(loginUserDTO.getUsername(), loginUserDTO.getPassword(), userDetails.getAuthorities())
             );
 
+            // Проверка, существует ли email
+
+            boolean isNorm
+
             // Установка аутентифицированного пользователя в контекст безопасности
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -67,8 +75,6 @@ public class LoginController {
             cookie.setHttpOnly(true);
 
             response.addCookie(cookie);
-
-            System.out.println(SecurityContextHolder.getContext().getAuthentication());
             return "redirect:/blogs/main";
 
         } catch (BadCredentialsException ex) {

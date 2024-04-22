@@ -27,8 +27,10 @@ public class JwtTokenUtils {
         try {
             // Разбираем токен и извлекаем данные
             Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+
             // Проверяем, не истек ли срок действия токена
             Date expiration = claims.getExpiration();
+
             return !expiration.before(new Date());
         } catch (Exception e) {
             // Ошибка при проверке токена
