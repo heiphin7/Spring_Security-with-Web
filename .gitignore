@@ -31,13 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-# Ignore application.yaml
-/src/main/resources/application.yaml
-
-# Ignore pom.xml
-/pom.xml
-
-# Ignore EmailChecker
-
-/src/api/EmailChecker.java

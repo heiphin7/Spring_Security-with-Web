@@ -38,6 +38,7 @@ public class RegistrationController {
 
     @PostMapping("/register")
     public String registerNewUser(@Valid RegistrationUserDTO registrationUserDTO, Errors errors, RedirectAttributes redirectAttributes){
+        //TODO СДЕЛАТЬ ЧТОБЫ ПОЧТЫ БЫЛИ УНИКАЛЬНЫМИ!!
 
         // Сначала у нас идет проверка на количество символов, а далее уже ручные проверки
         if(errors.hasErrors()){

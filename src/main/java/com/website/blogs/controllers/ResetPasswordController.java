@@ -52,8 +52,12 @@ public class ResetPasswordController {
             return "reset-password";
         }
 
-        // Если все круто, тогда перенаправляем пользователя не страницу подтвреждения пароля, где передаем email как параметр
-        redirectAttributes.addAttribute("email", email);
-        return "redirect:/reset-password/success";
+        // Если все круто, тогда перенаправляем пользователя на страницу успешной авторизации
+        return "redirect:/reset-password/sended";
+    }
+
+    @GetMapping("/reset-password/sended")
+    public String resetSended() {
+        return "email-sended";
     }
 }
