@@ -1,0 +1,26 @@
+@startuml
+class UserController {
+    + resetPassword(email: String): String
+}
+
+class PasswordResetController {
+    + resetPassword(uuid: String): String
+}
+
+class UserService {
+    + generateResetToken(email: String): String
+}
+
+class TokenService {
+    + validateToken(uuid: String): boolean
+}
+
+class EmailService {
+    + sendResetEmail(email: String, uuid: String): void
+}
+
+UserController -- UserService
+PasswordResetController -- TokenService
+PasswordResetController -- UserService
+PasswordResetController -- EmailService
+@enduml

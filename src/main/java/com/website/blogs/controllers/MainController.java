@@ -14,10 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/blogs/")
 public class MainController {
     private final BlogService blogService;
-    @GetMapping("/main")
+    @GetMapping("/blogs/main")
     public String getMainpage(@RequestParam(defaultValue = "0") int page, Model model){
         Page<Blog> blogPage =  blogService.getAllBlogs(page, 10);
         model.addAttribute("blogs", blogPage.getContent());
@@ -26,4 +25,8 @@ public class MainController {
         return "main";
     }
 
+    @GetMapping("/")
+    public String mainPage() {
+        return "redirect:/login";
+    }
 }

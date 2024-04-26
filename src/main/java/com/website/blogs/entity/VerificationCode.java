@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "verificationCode")
+@Table(name = "verification_code")
 public class VerificationCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
