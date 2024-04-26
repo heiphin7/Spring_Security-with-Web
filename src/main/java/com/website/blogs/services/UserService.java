@@ -55,6 +55,12 @@ public class UserService implements UserDetailsService {
         userRepository.save(originalUser);
     }
 
+    // Метод для проверки, сущесвтует ли email
+    public boolean emailExists(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    // Для Spring Security, Метод для UserDetails
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

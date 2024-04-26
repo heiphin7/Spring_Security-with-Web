@@ -52,6 +52,7 @@ public class VerificationEmailController {
         // Его перенаправили или он сам постучался на этот endpoint, так как верификация
         // Должна идти строго после авторизации
 
+        // Получаем username из сессии
         HttpSession session = request.getSession();
         String sessionName = (String) session.getAttribute("username");
 
@@ -93,6 +94,11 @@ public class VerificationEmailController {
 
         User user = userService.findByUsername(username).orElse(null);
         String verificationCode =  otpGenerator.generateOTP();
+
+        // Удаление старого кода верификации, если он существует
+        if (user != null && user.getLastSendedCode() != null) {
+            verificationCodeRepository.deleteByUser(user);
+        }
 
         // Проверка, прошла ли минута перед отправкой новой
         if(user != null && user.getLastSendedCode() != null) {

@@ -28,6 +28,7 @@ public class SecurityConfig {
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/error/**", "/error/").permitAll()
                         .requestMatchers("/verification/**").permitAll()
+                        .requestMatchers("/reset-password", "/reset-password/success").permitAll()
                         .requestMatchers("/blogs/**").authenticated()
                         .anyRequest().permitAll()
                 )
