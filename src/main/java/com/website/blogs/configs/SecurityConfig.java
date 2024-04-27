@@ -29,6 +29,7 @@ public class SecurityConfig {
                         .requestMatchers("/error/**", "/error/").permitAll()
                         .requestMatchers("/verification/**").permitAll()
                         .requestMatchers("/reset-password", "/reset-password/success").permitAll()
+                        .requestMatchers("/password/reset/**").permitAll()
                         .requestMatchers("/blogs/**").authenticated()
                         .anyRequest().permitAll()
                 )

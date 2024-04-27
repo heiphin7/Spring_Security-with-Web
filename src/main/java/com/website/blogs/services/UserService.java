@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,8 +22,17 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
+
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+
+    public void changePassword(User user, String newEncodedPassword) {
+        // Устанавливаем новый пароль
+        user.setPassword(newEncodedPassword);
+
+        // Сохраняем пользователя но уже с новым паролем
+        userRepository.save(user);
+    }
 
     public Optional<User> getCurrentUser () {
         return findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -53,6 +63,14 @@ public class UserService implements UserDetailsService {
     public void updateFavoriteBlogs(User originalUser, User updatedUser) {
         originalUser.setFavoriteBlogs(updatedUser.getFavoriteBlogs());
         userRepository.save(originalUser);
+    }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public Optional<User> findById(Long id){
+        return userRepository.findById(id);
     }
 
     // Метод для проверки, сущесвтует ли email

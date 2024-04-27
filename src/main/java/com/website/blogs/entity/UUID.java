@@ -22,11 +22,6 @@ public class UUID {
     @Column(name = "is_Activated")
     private boolean is_Activated;
 
-    @OneToOne
-    @JoinTable(
-            name = "users_uuid_codes",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "uuid_id")
-    )
-    private User user;
+    @Column(name = "user_id")
+    private Long user_id;
 }

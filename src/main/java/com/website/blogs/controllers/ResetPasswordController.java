@@ -1,7 +1,12 @@
 package com.website.blogs.controllers;
 
 import com.website.blogs.api.EmailChecker;
+import com.website.blogs.entity.User;
+import com.website.blogs.repository.UUIDRepository;
+import com.website.blogs.services.MailSenderService;
+import com.website.blogs.services.UUIDService;
 import com.website.blogs.services.UserService;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +21,9 @@ public class ResetPasswordController {
 
     private final UserService userService;
     private final EmailChecker emailChecker;
+    private final UUIDService uuidService;
+    private final UUIDRepository uuidRepository;
+    private final MailSenderService mailSenderService;
 
     @GetMapping("/reset-password")
     public String resetPage(Model model) {
@@ -52,12 +60,41 @@ public class ResetPasswordController {
             return "reset-password";
         }
 
-        // Если все круто, тогда перенаправляем пользователя на страницу успешной авторизации
+        User user = userService.findByEmail(email).orElse(null);
+
+        if(user == null) {
+            model.addAttribute("emailError", "Пользователь с такой почтой не найден!");
+            return "reset-password";
+        }
+
+        String uuid = uuidService.generateNewToken();
+
+        uuidService.saveNewToken(user, uuid);
+
+        sendUUIDMessage(uuid, user);
+
+        // Если все круто, тогда перенаправляем пользователя на страницу успешного запроса
         return "redirect:/reset-password/sended";
+    }
+
+    // Метод для отправки email для восстановления
+    private void sendUUIDMessage(String uuid, User user) {
+        String resetLink = "http://16.171.166.173:8008/password/reset/" + uuid;
+        String subject = "Восстановление пароля";
+        String message = "Здравствуйте, " + user.getUsername() + "!\n\n"
+                + "Вы запросили восстановление пароля для вашей учетной записи. "
+                + "Чтобы завершить процесс, пожалуйста, перейдите по ссылке ниже:\n\n"
+                + resetLink + "\n\n"
+                + "Если вы не делали этот запрос, проигнорируйте это сообщение.\n\n"
+                + "С уважением,\n"
+                + "Команда [название вашего сайта]";
+
+        mailSenderService.sendEmail("shalgynbayramazan@gmail.com", user.getEmail(), subject, message);
     }
 
     @GetMapping("/reset-password/sended")
     public String resetSended() {
+        System.out.println("Дошло до метода resetSende");
         return "email-sended";
     }
 }

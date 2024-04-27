@@ -33,7 +33,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     // Игнорируемые страницы, такие как страницы регистрации и авторизации а также статические ресурсы для стилей
     private final List<String> ignoredUrls = Arrays.asList
             ("/login", "/register", "/images/", "/css/", "/reset-password/email/sended" ,
-                    "/error/401", "/error/404", "/reset-password", "/reset-password/success");
+                    "/error/401", "/error/404", "/reset-password", "/reset-password/success", "/password/reset/");
 
     private static final Logger logger = LoggerFactory.getLogger(RegistrationController.class);
 
@@ -43,7 +43,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                                     FilterChain chain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
 
-        if (shouldIgnoreRequest(requestURI)) {
+        if (shouldIgnoreRequest(requestURI) || requestURI.startsWith("/password/reset/")) {
             chain.doFilter(request, response);
             return;
         }
