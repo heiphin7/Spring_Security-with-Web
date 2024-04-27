@@ -13,6 +13,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -88,6 +89,7 @@ public class VerificationEmailController {
     }
 
     @PostMapping("/email-verification/{username}/send-code")
+    @Transactional
     public String sendCode(@PathVariable(name = "username") String username , Model model,
                            HttpServletResponse response,
                            RedirectAttributes redirectAttributes) {
@@ -95,9 +97,9 @@ public class VerificationEmailController {
         User user = userService.findByUsername(username).orElse(null);
         String verificationCode =  otpGenerator.generateOTP();
 
-        // Удаление старого кода верификации, если он существует
-        if (user != null && user.getLastSendedCode() != null) {
-            verificationCodeRepository.deleteByUser(user);
+        if(user == null) {
+            redirectAttributes.addFlashAttribute("message", "Пользователь не найден!");
+            return "redirect:/login";
         }
 
         // Проверка, прошла ли минута перед отправкой новой
@@ -108,6 +110,11 @@ public class VerificationEmailController {
                 model.addAttribute("message", "Вы уже отправили код меньше минуты назад, подождите!");
                 return "VerifyEmail";
             }
+        }
+
+        // Удаление старого кода верификации, если он существует
+        if (user != null && user.getLastSendedCode() != null) {
+            verificationCodeRepository.deleteByUser(user);
         }
 
         try{

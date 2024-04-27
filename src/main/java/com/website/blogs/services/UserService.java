@@ -45,6 +45,7 @@ public class UserService implements UserDetailsService {
 
     public void saveUser(User user){
         String username = user.getUsername();
+
         if(userExists(username)){
             throw new IllegalArgumentException("Пользователь с именем " + username + " уже существует");
         }
@@ -52,6 +53,8 @@ public class UserService implements UserDetailsService {
         Role defaultRole = roleRepository.findByName("ROLE_USER").orElse(null);
 
         if(defaultRole == null) {
+            defaultRole = new Role();
+            defaultRole.setId(1L);
             defaultRole.setName("ROLE_USER");
             roleRepository.save(defaultRole);
         }

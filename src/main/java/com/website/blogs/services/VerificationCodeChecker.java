@@ -23,7 +23,7 @@ public class VerificationCodeChecker {
     private final VerificationCodeRepository verificationCodeRepository;
 
     // Аннотация scheduled - означает что данный поток "запланированный"
-    // то есть данный поток будет выполняться автоматически каждые 3 минуты
+    // то есть данный поток будет выполняться автоматически каждые 30 минут
    @Scheduled(fixedRate = 1800000)
    @Transactional
     public void VerificationCodeCheck() {
@@ -41,14 +41,13 @@ public class VerificationCodeChecker {
                 verificationCodeRepository.delete(verificationCode);
             }
 
-            // Если код уже использован тогда мы можем архивировать его
+            // Если код уже использован тогда мы можем удаляем его
             if(verificationCode.isUsed()) {
-                // TODO что делать если использован
+                logger.info("Токен с id: " + verificationCode.getCode() + " удалён, так как был использован");
 
+                verificationCodeRepository.delete(verificationCode);
             }
-
         }
-
         logger.info("Проверка токенов закончилась..............");
     }
 }
