@@ -38,7 +38,6 @@ public class RegistrationController {
 
     @PostMapping("/register")
     public String registerNewUser(@Valid RegistrationUserDTO registrationUserDTO, Errors errors, RedirectAttributes redirectAttributes){
-        //TODO СДЕЛАТЬ ЧТОБЫ ПОЧТЫ БЫЛИ УНИКАЛЬНЫМИ!!
 
         // Сначала у нас идет проверка на количество символов, а далее уже ручные проверки
         if(errors.hasErrors()){
@@ -51,7 +50,6 @@ public class RegistrationController {
             return "registration";
         }
 
-
         // проверка, не занято ли имя пользователя
         if(userService.userExists(registrationUserDTO.getUsername())){
             errors.rejectValue("username", "erorr.UserExists", "Имя пользователя уже занято!");
@@ -61,6 +59,12 @@ public class RegistrationController {
         // Проверка на содержание пробелов в email
         if (!registrationUserDTO.getEmail().matches("^[^\\s]+$")) {
             errors.rejectValue("email", "error.notAvailableEmail", "Почта не должна содержать пробелы!");
+            return "registration";
+        }
+
+        // Проверка на уникальность email-а
+        if(userService.emailExists(registrationUserDTO.getEmail())) {
+            errors.rejectValue("email", "error.notAvailableEmail", "Данная почта уже используется!");
             return "registration";
         }
 

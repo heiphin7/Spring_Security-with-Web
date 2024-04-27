@@ -57,7 +57,6 @@ public class ChangePasswordController {
 
     @GetMapping("/reset-password/{uuid}")
     public String resetPassword(@PathVariable(name = "uuid") String uuid, Model model) {
-        System.out.println(uuid);
         return "password-reset-page";
     }
 
@@ -66,11 +65,20 @@ public class ChangePasswordController {
                                  Model model,
                                  String newPassword,
                                  RedirectAttributes redirectAttributes) {
+        if(newPassword.isEmpty() || newPassword.isBlank()) {
+            model.addAttribute("passwordError", "Пароль не может быть пустым!");
+            return "password-reset-page";
+        }
+
+        if(newPassword.length() < 8) {
+            model.addAttribute("passwordError", "Пароль должен состоять минимум из 8-символов");
+            return "password-reset-page";
+        }
 
         UUID token = uuidService.findByUUID(uuid);
 
         // Достаем по токену пользователя
-        User user = userService.findById(token.getUser_id()).orElse(null);
+        User user = userService.findById(token.getUserId()).orElse(null);
 
         // Проверяем, все ли в порядке
         if(token == null || user == null) {
@@ -81,13 +89,9 @@ public class ChangePasswordController {
         // Если нормально, тогда мы должны сменить пароль
         userService.changePassword(user, passwordEncoder.encode(newPassword));
 
-        // А также, мы должны пометить uuid - токен как использованный
-        token.set_Activated(true);
+        uuidRepository.delete(token);
 
-        // Сохраняем изменения в базе данных
-        uuidRepository.save(token);
-
-        redirectAttributes.addFlashAttribute("message", "Пароль успешно изменене, теперь авторизуйтесь");
+        redirectAttributes.addFlashAttribute("message", "Пароль успешно изменён, теперь авторизуйтесь");
         return "redirect:/login";
     }
 }

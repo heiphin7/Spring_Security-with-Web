@@ -28,7 +28,7 @@ public class UUIDService {
         uuidForSave.set_Activated(false);
 
         // Значение пользователя
-        uuidForSave.setUser_id(user.getId());
+        uuidForSave.setUserId(user.getId());
 
         // Время жизни - 15 минут
         uuidForSave.setExpirationDate(ZonedDateTime.now().plusMinutes(15));

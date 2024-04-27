@@ -3,6 +3,7 @@ package com.website.blogs.services;
 import com.website.blogs.controllers.RegistrationController;
 import com.website.blogs.entity.VerificationCode;
 import com.website.blogs.repository.VerificationCodeRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,8 @@ public class VerificationCodeChecker {
 
     // Аннотация scheduled - означает что данный поток "запланированный"
     // то есть данный поток будет выполняться автоматически каждые 3 минуты
-   @Scheduled(fixedRate = 180000)
+   @Scheduled(fixedRate = 1800000)
+   @Transactional
     public void VerificationCodeCheck() {
 
         logger.info("Началась проверка токенов............");

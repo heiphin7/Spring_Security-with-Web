@@ -1,6 +1,7 @@
 package com.website.blogs.services;
 
 
+import com.website.blogs.entity.Role;
 import com.website.blogs.entity.User;
 import com.website.blogs.repository.RoleRepository;
 import com.website.blogs.repository.UserRepository;
@@ -47,7 +48,15 @@ public class UserService implements UserDetailsService {
         if(userExists(username)){
             throw new IllegalArgumentException("Пользователь с именем " + username + " уже существует");
         }
-        user.setRoles(List.of(roleRepository.findByName("ROLE_USER").orElseThrow(null)));
+
+        Role defaultRole = roleRepository.findByName("ROLE_USER").orElse(null);
+
+        if(defaultRole == null) {
+            defaultRole.setName("ROLE_USER");
+            roleRepository.save(defaultRole);
+        }
+
+        user.setRoles(List.of(defaultRole));
         userRepository.save(user);
     }
 

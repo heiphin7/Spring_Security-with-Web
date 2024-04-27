@@ -22,6 +22,6 @@ public class UUID {
     @Column(name = "is_Activated")
     private boolean is_Activated;
 
-    @Column(name = "user_id")
-    private Long user_id;
+    @Column(name = "userId")
+    private Long userId;
 }

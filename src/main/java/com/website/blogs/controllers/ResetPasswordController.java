@@ -1,6 +1,7 @@
 package com.website.blogs.controllers;
 
 import com.website.blogs.api.EmailChecker;
+import com.website.blogs.entity.UUID;
 import com.website.blogs.entity.User;
 import com.website.blogs.repository.UUIDRepository;
 import com.website.blogs.services.MailSenderService;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -60,11 +63,17 @@ public class ResetPasswordController {
             return "reset-password";
         }
 
+        // Находим пользователя по email, который он указал на странице
         User user = userService.findByEmail(email).orElse(null);
 
         if(user == null) {
             model.addAttribute("emailError", "Пользователь с такой почтой не найден!");
             return "reset-password";
+        }
+        List<UUID> uuidList = uuidRepository.findAllByUserId(user.getId());
+
+        for(UUID uuidInList: uuidList) {
+            uuidRepository.delete(uuidInList);
         }
 
         String uuid = uuidService.generateNewToken();
@@ -85,16 +94,13 @@ public class ResetPasswordController {
                 + "Вы запросили восстановление пароля для вашей учетной записи. "
                 + "Чтобы завершить процесс, пожалуйста, перейдите по ссылке ниже:\n\n"
                 + resetLink + "\n\n"
-                + "Если вы не делали этот запрос, проигнорируйте это сообщение.\n\n"
-                + "С уважением,\n"
-                + "Команда [название вашего сайта]";
+                + "Если вы не делали этот запрос, проигнорируйте это сообщение.\n\n";
 
         mailSenderService.sendEmail("shalgynbayramazan@gmail.com", user.getEmail(), subject, message);
     }
 
     @GetMapping("/reset-password/sended")
     public String resetSended() {
-        System.out.println("Дошло до метода resetSende");
         return "email-sended";
     }
 }
