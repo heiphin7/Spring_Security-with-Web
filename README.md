@@ -31,7 +31,7 @@
 
 Здесь представлены связи таблиц в базе данных
 
-![alt text](https://github.com/heiphin7/Spring_Security-with-Web/blob/main/database%20references.png)
+![alt text](https://github.com/heiphin7/Spring_Security-with-Web/blob/main/database%20visualisation.png)
 
 
 # Иллюстрации
