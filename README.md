@@ -48,6 +48,18 @@
 
 ![alt text](https://github.com/heiphin7/Spring_Security-with-Web/blob/main/images/Sing%20in.png)
 
+### Email Verification Code
+
+![alt text](https://github.com/heiphin7/Spring_Security-with-Web/blob/main/Email-Verification.png)
+
+### Reset Password
+
+![alt text](https://github.com/heiphin7/Spring_Security-with-Web/blob/main/Response%20for%20reset%20password%20.png)
+
+### Succes Reset Password
+
+![alt text](https://github.com/heiphin7/Spring_Security-with-Web/blob/main/Success-Email-Sended.png)
+
 ### Add post From
 
 ![alt text](https://github.com/heiphin7/Spring_Security-with-Web/blob/main/images/add-post.png)
