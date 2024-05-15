@@ -56,10 +56,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         // Достаём токен, далее нужно проверить, действительный ли токен
         String token = tokenExtractor.extractToken(request);
 
-        if(token != null) {
-            System.out.println(token);
-        }
-
         if (jwtTokenUtils.validateToken(token)) {
             String username = jwtTokenUtils.getUsername(token);
             User userInDB = userService.findByUsername(username).orElse(null);

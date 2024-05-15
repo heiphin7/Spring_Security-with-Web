@@ -43,9 +43,9 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public Object checkUser(@Valid LoginUserDTO loginUserDTO,
+    public String checkUser(@Valid LoginUserDTO loginUserDTO,
                             Errors errors, Model model,
-                            RedirectAttributes redirectAttributes, HttpServletRequest request) {
+                            HttpServletRequest request) {
 
         // Валидация от Data Transfer Object
         if (errors.hasErrors()) {

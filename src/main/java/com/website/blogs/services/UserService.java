@@ -1,6 +1,7 @@
 package com.website.blogs.services;
 
 
+import com.website.blogs.dtos.RegistrationUserDTO;
 import com.website.blogs.entity.Role;
 import com.website.blogs.entity.User;
 import com.website.blogs.repository.RoleRepository;
@@ -43,11 +44,20 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public void saveUser(User user){
+    public String saveUser(User user){
         String username = user.getUsername();
 
+        // Проверяем все поля
+        if (user.getUsername() == null || user.getPassword() == null || user.getEmail() == null) {
+            return "Все поля должны быть заполнены!";
+        }
+
         if(userExists(username)){
-            throw new IllegalArgumentException("Пользователь с именем " + username + " уже существует");
+            return "Пользователь с таким именем уже сущесвует!";
+        }
+
+        if (!user.getEmail().matches("^[^\\s]+$") || !user.getEmail().matches(".*@.*")) {
+            return "Введите корректную почту!";
         }
 
         Role defaultRole = roleRepository.findByName("ROLE_USER").orElse(null);
@@ -61,6 +71,7 @@ public class UserService implements UserDetailsService {
 
         user.setRoles(List.of(defaultRole));
         userRepository.save(user);
+        return "Пользователь успешно сохранен!";
     }
 
 
@@ -68,7 +79,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username);
     }
 
-    public boolean userExists(String username){
+    public boolean userExists(String username)  {
         return findByUsername(username).isPresent();
     }
 

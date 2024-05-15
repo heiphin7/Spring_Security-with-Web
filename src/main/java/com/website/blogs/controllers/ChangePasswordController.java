@@ -81,7 +81,7 @@ public class ChangePasswordController {
         User user = userService.findById(token.getUserId()).orElse(null);
 
         // Проверяем, все ли в порядке
-        if(token == null || user == null) {
+        if(user == null) {
             redirectAttributes.addFlashAttribute("emailError", "Пользователь по токену не найден!");
             return "redirect:/reset-password";
         }

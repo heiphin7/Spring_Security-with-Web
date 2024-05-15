@@ -23,7 +23,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequiredArgsConstructor
 public class RegistrationController {
-    private final Validator validator;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final TokenExtractor tokenExtractor;
@@ -57,7 +56,7 @@ public class RegistrationController {
         }
 
         // Проверка на содержание пробелов в email
-        if (!registrationUserDTO.getEmail().matches("^[^\\s]+$")) {
+        if (!registrationUserDTO.getEmail().matches("^[^\\s]+$") || !registrationUserDTO.getEmail().matches("^[a-zA-Zа-яА-Я0-9]+$")) {
             errors.rejectValue("email", "error.notAvailableEmail", "Почта не должна содержать пробелы!");
             return "registration";
         }
@@ -99,16 +98,19 @@ public class RegistrationController {
         String encodedPassword = passwordEncoder.encode(registrationUserDTO.getPassword());
         User user = new User(registrationUserDTO.getUsername(),encodedPassword, registrationUserDTO.getEmail());
 
-        // Сообщение об успешной регистрации
-        redirectAttributes.addFlashAttribute("message", "Отлично! Вы успешно прошли регистрацию, теперь подтвердите почту!");
+        // Перед сохранением пользователя перепроверяем условия
+        String response = userService.saveUser(user);
 
-        try{
-            userService.saveUser(user);
-        }catch (IllegalArgumentException e){
+        if(response.equals("Все поля должны быть заполнены!")) {
+            errors.rejectValue("username", "erorr.NullException", "Все поля должны быть заполнены!");
+            return "registration";
+        } else if(response.equals("Пользователь с таким именем уже сущесвует!")) {
             errors.rejectValue("username", "erorr.UserExists", "Имя пользователя уже занято!");
             return "registration";
         }
 
+        // Сообщение об успешной регистрации
+        redirectAttributes.addFlashAttribute("message", "Отлично! Вы успешно прошли регистрацию, теперь подтвердите почту!");
         logger.info("Зарегестрировался новый пользователь! username:" + user.getUsername() + " id: " + user.getId());
         return "redirect:/login";
     }
