@@ -56,7 +56,7 @@ public class RegistrationController {
         }
 
         // Проверка на содержание пробелов в email
-        if (!registrationUserDTO.getEmail().matches("^[^\\s]+$") || !registrationUserDTO.getEmail().matches("^[a-zA-Zа-яА-Я0-9]+$")) {
+        if (!registrationUserDTO.getEmail().matches("^[^\\s]+$")) {
             errors.rejectValue("email", "error.notAvailableEmail", "Почта не должна содержать пробелы!");
             return "registration";
         }

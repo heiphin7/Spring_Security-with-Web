@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 
 @SpringBootTest
-public class AuthneticationUserServiceTest {
+public class RegistrationTests {
 
     @InjectMocks
     private static UserService userService;
@@ -32,18 +32,6 @@ public class AuthneticationUserServiceTest {
     }
 
     @Test
-    public void save_empty_user() {
-        // arrange
-        User user = new User(); // empty user
-
-        // act
-        String message = userService.saveUser(user);
-
-        // assert
-        Assertions.assertEquals("Все поля должны быть заполнены!", message);
-    }
-
-    @Test
     public void success_save_user() {
         // arrange
         // default user without any fields
@@ -57,6 +45,18 @@ public class AuthneticationUserServiceTest {
 
         // assert
         Assertions.assertEquals("Пользователь успешно сохранен!", message);
+    }
+
+    @Test
+    public void save_empty_user() {
+        // arrange
+        User user = new User(); // empty user
+
+        // act
+        String message = userService.saveUser(user);
+
+        // assert
+        Assertions.assertEquals("Все поля должны быть заполнены!", message);
     }
 
     @Test

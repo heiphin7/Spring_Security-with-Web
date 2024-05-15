@@ -4,6 +4,7 @@ import com.website.blogs.api.EmailChecker;
 import com.website.blogs.cookie.TokenExtractor;
 import com.website.blogs.dtos.LoginUserDTO;
 import com.website.blogs.entity.User;
+import com.website.blogs.services.AuthenticationService;
 import com.website.blogs.services.UserService;
 import com.website.blogs.utils.JwtTokenUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,7 +35,9 @@ public class LoginController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final TokenExtractor tokenExtractor;
+    private final AuthenticationService authenticationService;
     private static final Logger logger = LoggerFactory.getLogger(RegistrationController.class);
+
     @GetMapping("/login")
     public String loginPage(Model model, LoginUserDTO loginUserDTO, HttpServletResponse response, HttpServletRequest request){
         tokenExtractor.removeTokenFromRequest(request);
@@ -53,17 +56,10 @@ public class LoginController {
         }
 
         try {
-            UserDetails userDetails = userService.loadUserByUsername(loginUserDTO.getUsername());
-
-            // Аутентификация пользователя
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginUserDTO.getUsername(),
-                            loginUserDTO.getPassword(),
-                            userDetails.getAuthorities()
-                    )
+            // Аутентификация пользовталея с помощью сервиса authentication
+            Authentication authentication = authenticationService.authenticate(
+                    loginUserDTO.getUsername(), loginUserDTO.getPassword()
             );
-
 
             // Установка аутентифицированного пользователя в контекст безопасности
             SecurityContextHolder.getContext().setAuthentication(authentication);
