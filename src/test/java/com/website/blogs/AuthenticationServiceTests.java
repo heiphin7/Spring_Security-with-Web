@@ -28,7 +28,7 @@ import java.util.List;
 
 
 @SpringBootTest
-public class AuthenticationTests {
+public class AuthenticationServiceTests {
     // Инициализация mockBean-ов
     @Mock
     private static UserRepository userRepository;

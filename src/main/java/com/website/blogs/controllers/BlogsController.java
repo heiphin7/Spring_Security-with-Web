@@ -46,12 +46,8 @@ public class BlogsController {
 
     @PostMapping("/add")
     public String saveNewBlog(@Valid AddBlogDTO addBlogDTO, BindingResult errors) {
+        // Проверка от web-валидатора hibernate validator
         if(errors.hasErrors()){
-            return "Add-Post";
-        }
-
-        if(!urLchecker.isValidImageLink(addBlogDTO.getImage())){
-            errors.rejectValue("image", "incorrectImage", "Введите корректный URL");
             return "Add-Post";
         }
 
@@ -59,7 +55,17 @@ public class BlogsController {
                 .orElseThrow(() -> new UsernameNotFoundException("Current User not found"));
 
         Blog blog = new Blog(addBlogDTO.getTitle(), addBlogDTO.getAnons(), addBlogDTO.getFulltext(), addBlogDTO.getImage(), user);
-        blogService.saveBlog(blog);
+        String message = blogService.saveBlog(blog);
+
+        if(message.equals("Заполните все поля")) {
+            errors.rejectValue("title", "incorretBlog", "Заполните все поля!");
+        } else if (message.equals("Введите корректную ссылку!")) {
+            errors.rejectValue("image", "incorrectImage", "Введите корректный URL");
+            return "Add-Post";
+        }else if (message.equals("Нету автора")) {
+            errors.rejectValue("title", "incorrectUser", "Авторизуйтесь заново, что то не так");
+            return "Add-Post";
+        }
 
         logger.info("Добавлен новый блог! id: " + blog.getId());
         return "redirect:/blogs/main";
