@@ -25,6 +25,7 @@ build-job:
   image: maven:3.8.4-openjdk-17
   script:
     - echo "Код компилириуется"
+    - mvn clean
     - mvn package
     - echo "Код скомпилировался."
 
@@ -38,6 +39,7 @@ unit-test-job:
 
 deploy-job:
   stage: deploy
+  image: docker:20.10.16
   environment: production
   script:
     - echo "building docker compose.."
