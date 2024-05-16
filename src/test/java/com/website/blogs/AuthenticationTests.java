@@ -9,14 +9,17 @@ import com.website.blogs.repository.UserRepository;
 import com.website.blogs.services.AuthenticationService;
 import com.website.blogs.services.UserService;
 import javassist.NotFoundException;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -40,8 +43,8 @@ public class AuthenticationTests {
     @InjectMocks
     private static AuthenticationService authenticationService;
 
-    @BeforeAll
-    public static void init() {
+    @BeforeEach
+    public void init() {
         // Инициализируем моки, которые используются в authenticationService
         roleRepository = Mockito.mock(RoleRepository.class);
         userRepository = Mockito.mock(UserRepository.class);
@@ -60,21 +63,22 @@ public class AuthenticationTests {
         );
 
         // Имитируем поведение мока UserService которое возвращает пользователя по имени
-        Mockito.when(userService.loadUserByUsername("authenticaionuser")).thenReturn(
-                userDetailsForReturn
-        );
+        Mockito.when(userService.loadUserByUsername("authenticaionuser")).thenReturn(userDetailsForReturn);
 
-        UsernamePasswordAuthenticationToken authenticationToken =
+        UsernamePasswordAuthenticationToken successAuthenticationToken =
                 new UsernamePasswordAuthenticationToken(
                         userDetailsForReturn.getUsername(),
                         userDetailsForReturn.getPassword(),
-                        null // authorities
+                        userDetailsForReturn.getAuthorities()
                 );
 
        /* AuthenticationManager.Authenticate будет принимать authentication и также его возвращать.
         * Если переданный токен будет неправильным, тогда он выкинет исключение BadCredentionalException
         * В данном случае мы только имитируем его работу, поэтому предпологается что authenticationToken правильный                                                             */
-        Mockito.when(authenticationManager.authenticate(authenticationToken)).thenReturn(authenticationToken);
+
+        // for success authentication
+         Mockito.when(authenticationManager.authenticate(successAuthenticationToken)).thenReturn(successAuthenticationToken);
+
 
     }
     @Test
@@ -89,7 +93,32 @@ public class AuthenticationTests {
         );
 
         // Assert
+        // Если токен аутентфикации не равен нулю, тогда значит что пользователь успешно получил токен и все норм
         Assertions.assertNotNull(authentication);
+    }
+
+    @Test
+    public void username_notFound_exception() {
+        // Arrange
+        String username = "askdfjnalkejbfiaoefapwiojdfa"; // Несуществующий пользователь
+        String password = "some-password";
+
+        // Assert & throw exception
+        Assert.assertThrows(NotFoundException.class, () -> {
+            authenticationService.authenticate(username, password);
+        });
+    }
+
+    @Test
+    public void bad_credentionals_exception() {
+        // arrange
+        String username = "authenticaionuser";
+        String password = "wrong-password";
+
+        // act & assert
+        Assert.assertThrows(BadCredentialsException.class, () -> {
+            authenticationService.authenticate(username, password);
+        });
     }
 
 }
