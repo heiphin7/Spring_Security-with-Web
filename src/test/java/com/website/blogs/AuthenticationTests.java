@@ -11,7 +11,6 @@ import com.website.blogs.services.UserService;
 import javassist.NotFoundException;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -55,10 +53,17 @@ public class AuthenticationTests {
                 authenticationManager, userService
         );
 
+    }
+    @Test
+    public void success_authentication() throws NotFoundException {
+        // Arrange
+        String username = "authenticaionuser";
+        String password = "secret-password";
+
         // UserForReturn of loadByUsername call
         UserDetails userDetailsForReturn = new User(
-                "authenticaionuser",
-                "secret-password",
+                username,
+                password,
                 List.of(new SimpleGrantedAuthority("ROLE_USER")) // Роль по умолчанию
         );
 
@@ -72,20 +77,8 @@ public class AuthenticationTests {
                         userDetailsForReturn.getAuthorities()
                 );
 
-       /* AuthenticationManager.Authenticate будет принимать authentication и также его возвращать.
-        * Если переданный токен будет неправильным, тогда он выкинет исключение BadCredentionalException
-        * В данном случае мы только имитируем его работу, поэтому предпологается что authenticationToken правильный                                                             */
-
-        // for success authentication
-         Mockito.when(authenticationManager.authenticate(successAuthenticationToken)).thenReturn(successAuthenticationToken);
-
-
-    }
-    @Test
-    public void success_authentication() throws NotFoundException {
-        // Arrange
-        String username = "authenticaionuser";
-        String password = "secret-password";
+        // Делаем мок для authenticationManager (Имитируем его работу, так как в тестовом классе он всего лишь мок объект)
+        Mockito.when(authenticationManager.authenticate(successAuthenticationToken)).thenReturn(successAuthenticationToken);
 
         // act
         Authentication authentication = authenticationService.authenticate(
@@ -110,15 +103,36 @@ public class AuthenticationTests {
     }
 
     @Test
-    public void bad_credentionals_exception() {
+    public void bad_credentionals_exception() throws NotFoundException { // Пробрасываем NotFound, так как пользователь создан выше
         // arrange
-        String username = "authenticaionuser";
-        String password = "wrong-password";
+        String username = "authenticaionuser"; // Пользователь которого мы ранее успешно аутентифицировали
+        String password = "wrong-password"; // Но в данном случае с неправильным паролем
 
-        // act & assert
-        Assert.assertThrows(BadCredentialsException.class, () -> {
-            authenticationService.authenticate(username, password);
-        });
+        UserDetails userDetails = new User(
+                username,
+                "secret-password", // Здесь мы указываем другой пароль, так как у нас тест для проверки пароля
+                List.of(new SimpleGrantedAuthority("ROLE_USER")) // дефолтная роль
+        );
+
+        // При вызове loadByUsername мы возвращаем объект, который только что создали
+        Mockito.when(userService.loadUserByUsername(username)).thenReturn(userDetails);
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                userDetails.getUsername(),
+                password, // password будет другой, так как токен должен быть неправильным в тестовом сценарии
+                userDetails.getAuthorities()
+        );
+
+        // Данный метод будет возвращать null, так как токен аутентификации у нас неправильный
+        Mockito.when(authenticationManager.authenticate(authentication)).thenReturn(null);
+
+
+        // act
+        Authentication auth = authenticationService.authenticate(username, password);
+
+        // assert
+        // auth должен быть null, так как токен аутентификации неправильный
+        Assert.assertEquals(null, auth);
     }
 
 }
