@@ -6,5 +6,5 @@ RUN mvn clean package
 
 FROM openjdk:17-jdk-alpine
 WORKDIR /app
-COPY --from=builder /app/target/parser-0.0.1-SNAPSHOT.jar application.jar
+COPY --from=builder /app/target/blogs-0.0.1-SNAPSHOT.jar application.jar
 CMD ["java", "-jar", "application.jar"]
