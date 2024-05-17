@@ -6,9 +6,12 @@ import com.website.blogs.repository.VerificationCodeRepository;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.joda.time.DateTime;
+import org.springframework.expression.spel.ast.OpInc;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,12 +41,14 @@ public class VerificationCodeService {
         verificationCodeRepository.save(verificationCode);
     }
 
-    public boolean checkCode(String code) throws NotFoundException {
-        VerificationCode codeForCheck = verificationCodeRepository.findByCode(code).orElse(null);
+    public boolean checkCode(String code) {
+        Optional<VerificationCode> optional = verificationCodeRepository.findByCode(code);
 
-        if(codeForCheck == null) {
-            throw new NotFoundException("Код не найден");
+        if(!optional.isPresent()){
+            return false;
         }
+
+        VerificationCode codeForCheck = optional.get();
 
         ZonedDateTime now = ZonedDateTime.now();
 

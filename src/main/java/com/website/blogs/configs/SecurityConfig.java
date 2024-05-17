@@ -31,6 +31,7 @@ public class SecurityConfig {
                         .requestMatchers("/reset-password", "/reset-password/success").permitAll()
                         .requestMatchers("/password/reset/**").permitAll()
                         .requestMatchers("/blogs/**").authenticated()
+                        .requestMatchers("/swagger-ui/**").permitAll()
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)

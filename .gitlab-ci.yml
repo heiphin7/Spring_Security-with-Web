@@ -39,7 +39,7 @@ unit-test-job:
 
 deploy-job:
   stage: deploy
-  image: docker:20.10.16
+  image: docker
   environment: production
   script:
     - echo "building docker compose.."

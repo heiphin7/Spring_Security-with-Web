@@ -176,11 +176,9 @@ public class VerificationEmailController {
             return "VerifyEmail";
         }
 
-        boolean checkCode = false;
+        boolean checkCode = verificationCodeService.checkCode(code);
 
-        try{
-            checkCode = verificationCodeService.checkCode(code);
-        }catch (NotFoundException e){
+        if(!checkCode) {
             model.addAttribute("message", "Код неправильный!");
             return "VerifyEmail";
         }
