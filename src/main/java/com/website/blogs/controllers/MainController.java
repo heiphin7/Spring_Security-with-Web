@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class MainController {
     private final BlogService blogService;
+
     @GetMapping("/blogs/main")
     public String getMainpage(@RequestParam(defaultValue = "0") int page, Model model){
         Page<Blog> blogPage =  blogService.getAllBlogs(page, 10);
