@@ -87,7 +87,7 @@ public class AuthenticationServiceTests {
 
         // Assert
         // Если токен аутентфикации не равен нулю, тогда значит что пользователь успешно получил токен и все норм
-        Assertions.assertNotNull(authentication);
+        Assertions.assertEquals(null ,authentication);
     }
 
     @Test

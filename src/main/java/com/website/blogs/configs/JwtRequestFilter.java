@@ -44,7 +44,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
 
         if (shouldIgnoreRequest(requestURI) || requestURI.startsWith("/password/reset/") || requestURI.startsWith("/swagger")) {
-            System.out.println(requestURI);
             chain.doFilter(request, response);
             return;
         }
