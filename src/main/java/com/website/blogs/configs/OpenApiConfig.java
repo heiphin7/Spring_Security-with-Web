@@ -8,17 +8,13 @@ import io.swagger.v3.oas.annotations.info.License;
 // Настройки для отображения Swagger-ui
 @OpenAPIDefinition(
         info = @Info(
-                title = "Название API",
-                description = "Описание для API",
-                termsOfService = "Правила использования",
+                title = "Spring-Web Backend API",
+                description = "Это Backend API для взаимодействия с Fronted",
                 contact = @Contact(
-                        name = "Название контакта",
-                        email = "email контакта"
+                        name = "@heiphin7",
+                        email = "r.shalgin@gmail.com"
                 ),
-                license = @License(
-                        name = "Название лицензии"
-                ),
-                version = "v1"
+                version = "v2"
         )
 )
 public class OpenApiConfig {
